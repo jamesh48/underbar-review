@@ -125,7 +125,7 @@
         _.each(letters, function(letter, index) {
           iterations.push([letter, index]);
         });
-        alert(iterations);
+
         expect(iterations).to.eql([['a', 0], ['b', 1], ['c', 2]]);
       });
 
@@ -469,6 +469,7 @@
         _.reduce([1, 2, 3, 4], function(memo, item) {
           // FILL_ME_IN
           // Add a line here that makes this test pass
+          orderTraversed.push(item);
           // for a working implementation of reduce
           return memo;
         }, 10);

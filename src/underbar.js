@@ -86,7 +86,7 @@
   _.filter = function(collection, test) {
     let resultArr = [];
     for (let i = 0; i < collection.length; i++) {
-      if (test(collection[i])){
+      if (test(collection[i])) {
         resultArr.push(collection[i]);
       }
     }
@@ -95,9 +95,9 @@
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
-    // TIP: see if you can re-use _.filter() here, without simply
+    let rejected = _.filter(collection, test => {
 
-    // copying code in and modifying it
+    });
 
   };
 
