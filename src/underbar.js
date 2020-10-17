@@ -341,6 +341,14 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    let cache = {};
+    return function() {
+      const key = String(func + arguments[0] + arguments[1] + arguments[2]);
+      if (!cache[key]) {
+        cache[key] = func.apply(this, arguments);
+      }
+      return cache[key];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -350,6 +358,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    setTimeout(...arguments);
   };
 
 
