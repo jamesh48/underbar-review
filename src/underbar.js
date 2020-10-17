@@ -83,9 +83,11 @@
   };
 
   // Return all elements of an array that pass a truth test.
+  // [1, 2, 3, 4, 5, 6] f(el, idx, lst)
   _.filter = function(collection, test) {
     let resultArr = [];
     for (let i = 0; i < collection.length; i++) {
+
       if (test(collection[i])) {
         resultArr.push(collection[i]);
       }
@@ -95,22 +97,48 @@
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
-    let rejected = _.filter(collection, test => {
-
+    return _.filter(collection, function(item) {
+      return !test(item);
     });
-
   };
 
   // Produce a duplicate-free version of the array.
-  _.uniq = function(array, isSorted, iterator) {
-  };
+  //Inputs- Array, boolean, iterator- function
+  //Outputs- Array of unique values
+  //Constraints- Can't use Set for Sorted or iterator is defined, we can't use built in reduce
+  //Edge Cases - none or we will see...
+  //Strategy-
+  //1# - Push results to two arrays instead of one
+  //#2 - Push results to one array.
 
+  _.uniq = function(array, isSorted, iterator) {
+    var result = [];
+    var uniqueResults = [];
+    if (isSorted !== undefined) {
+      for (let i = 0; i < array.length; i++) {
+        uniqueResults.push(iterator(i));
+      }
+    } else {
+      return [...new Set(array)];
+    }
+    let trueI = uniqueResults.indexOf(true);
+    let falseI = uniqueResults.indexOf(false);
+    result.push(array[trueI], array[falseI]);
+    return result.sort((a, b) => a - b);
+  };
+  // var iterator = function(value) { return value === 1; };
+  // [true, false, false, false, false, false]
+  // var numbers = [1, 2, 2, 3, 4, 4];
+  // expect(_.uniq(numbers, true, iterator)).to.eql([1, 2]);
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
-    // map() is a useful primitive iteration function that works a lot
-    // like each(), but in addition to running the operation on all
-    // the members, it also maintains an array of results.
+    let result = [];
+    for (let i = 0; i < collection.length; i++) {
+      const val = iterator(collection[i]);
+      result.push(val);
+    }
+    return result;
   };
 
   /*
@@ -151,7 +179,37 @@
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
+
+  /*
+    Inputs:
+      1. Array
+      2. Function
+      3. Accumulator is initial value or memo
+    Outputs: Value
+    Constraints:
+      1. should invoke the iterator function with arguments (memo, item) in that order
+      2. Should not mutate input array
+      3. Should continue to call iterator even if the iterator returns undefined
+    Edge Cases: 1. Memo
+    Strategy:
+      1. Function takes in an array, and use the iterator to reduce it to one value.
+        If memo, initilize array at 0. Otherwise use collection at 0
+      2.
+  */
   _.reduce = function(collection, iterator, accumulator) {
+    if (accumulator !== undefined) {
+      for (let i = 0; i < collection.length; i++) {
+        const curResult = iterator(accumulator, collection[i]);
+        accumulator = curResult;
+      }
+    } else {
+      accumulator = collection[0];
+      for (let i = 1; i < collection.length; i++) {
+        const curResult = iterator(accumulator, collection[i]);
+        accumulator = curResult;
+      }
+    }
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -169,13 +227,11 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
-    // TIP: There's a very clever way to re-use every() here.
   };
 
 
@@ -228,7 +284,7 @@
     return function() {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // infromation from one function call to another.
+        // information from one function call to another.
         result = func.apply(this, arguments);
         alreadyCalled = true;
       }
@@ -269,6 +325,7 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+
   };
 
 
