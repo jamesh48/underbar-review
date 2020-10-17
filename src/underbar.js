@@ -180,22 +180,6 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
 
-  /*
-    Inputs:
-      1. Array
-      2. Function
-      3. Accumulator is initial value or memo
-    Outputs: Value
-    Constraints:
-      1. should invoke the iterator function with arguments (memo, item) in that order
-      2. Should not mutate input array
-      3. Should continue to call iterator even if the iterator returns undefined
-    Edge Cases: 1. Memo
-    Strategy:
-      1. Function takes in an array, and use the iterator to reduce it to one value.
-        If memo, initilize array at 0. Otherwise use collection at 0
-      2.
-  */
   _.reduce = function(collection, iterator, accumulator) {
     if (accumulator !== undefined) {
       for (let i = 0; i < collection.length; i++) {
@@ -224,14 +208,40 @@
     }, false);
   };
 
-
-  // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    if (iterator !== undefined) {
+      for (let i = 0; i < collection.length; i++) {
+        if (!iterator(collection[i])) {
+          return false;
+        }
+      }
+    } else {
+      for (let i = 0; i < collection.length; i++) {
+        if (!collection[i]) {
+          return false;
+        }
+      }
+    }
+    return true;
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+    if (iterator !== undefined) {
+      for (let i = 0; i < collection.length; i++) {
+        if (iterator(collection[i])) {
+          return true;
+        }
+      }
+    } else {
+      for (let i = 0; i < collection.length; i++) {
+        if (collection[i]) {
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
 
@@ -253,12 +263,41 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
+
+  _.extend = function(des) {
+    let argArr = [];
+    for (let i = 1; i < arguments.length; i++) {
+      argArr.push(arguments[i]);
+    }
+    for (let k = 0; k < argArr.length; k++) {
+      for (let key in argArr[k]) {
+        des[key] = argArr[k][key];
+      }
+    }
+    return des;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
+
+  // var destination = {};
+  // var source = { a: 1 };
+  // var anotherSource = { a: 'one' };
+
   _.defaults = function(obj) {
+    let argArr = [];
+    for (let i = 1; i < arguments.length; i++) {
+      argArr.push(arguments[i]);
+    }
+    for (let i = 0; i < argArr.length; i++) {
+      for (let key in argArr[i]) {
+        let keyArr = Object.keys(obj);
+        if (keyArr.indexOf(key) === -1) {
+          obj[key] = argArr[i][key];
+        }
+      }
+    }
+    return obj;
   };
 
 
