@@ -486,6 +486,21 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    let resultArr = [];
+    let remaining = [];
+    for (let i = 1; i < arguments.length; i++) {
+      remaining.push(arguments[i]);
+    }
+
+    for (let i = 0; i < array.length; i++) {
+      let item = array[i];
+      if (remaining.some(x => _.contains(x, item))) {
+        continue;
+      } else {
+        resultArr.push(item);
+      }
+    }
+    return resultArr;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
