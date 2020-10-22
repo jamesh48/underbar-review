@@ -82,11 +82,6 @@
   // [1, 2, 3, 4, 5, 6] f(el, idx, lst)
   _.filter = (collection, test) => {
     let resultArr = [];
-    // for (let i = 0; i < collection.length; i++) {
-    //   if (test(collection[i])) {
-    //     resultArr.push(collection[i]);
-    //   }
-    // }
     _.each(collection, function(item) {
       if (test(item)) {
         resultArr.push(item);
@@ -118,9 +113,6 @@
       _.each(array, function(item, index) {
         uniqueResults.push(iterator(index));
       });
-      // for (let i = 0; i < array.length; i++) {
-      //   uniqueResults.push(iterator(i));
-      // }
     } else {
       return [...new Set(array)];
     }
@@ -129,10 +121,6 @@
     result.push(array[trueI], array[falseI]);
     return _.sortBy(result);
   };
-  // var iterator = function(value) { return value === 1; };
-  // [true, false, false, false, false, false]
-  // var numbers = [1, 2, 2, 3, 4, 4];
-  // expect(_.uniq(numbers, true, iterator)).to.eql([1, 2]);
 
   // Return the results of applying an iterator to each element.
   _.map = (collection, iterator) => {
@@ -141,11 +129,6 @@
       let cool = iterator(item);
       result.push(cool);
     });
-
-    // for (let i = 0; i < collection.length; i++) {
-    //   const val = iterator(collection[i]);
-    //   result.push(val);
-    // }
     return result;
   };
 
@@ -207,7 +190,7 @@
   };
 
   // Determine if the array or object contains a given value (using `===`).
-  _.contains = function(collection, target) {
+  _.contains = (collection, target) => {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
     return _.reduce(collection, function(wasFound, item) {
@@ -218,40 +201,42 @@
     }, false);
   };
 
-  _.every = function(collection, iterator) {
+  _.every = (collection, iterator) => {
+    let result = true;
     if (iterator !== undefined) {
-      for (let i = 0; i < collection.length; i++) {
-        if (!iterator(collection[i])) {
-          return false;
+      _.each(collection, function(item) {
+        if (!iterator(item)) {
+          result = false;
         }
-      }
+      });
     } else {
-      for (let i = 0; i < collection.length; i++) {
-        if (!collection[i]) {
-          return false;
+      _.each(collection, function(item) {
+        if (!item) {
+          result = false;
         }
-      }
+      });
     }
-    return true;
+    return result;
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
-  _.some = function(collection, iterator) {
+  _.some = (collection, iterator) => {
+    let result = false;
     if (iterator !== undefined) {
-      for (let i = 0; i < collection.length; i++) {
-        if (iterator(collection[i])) {
-          return true;
+      _.each(collection, function(item) {
+        if (iterator(item)) {
+          result = true;
         }
-      }
+      });
     } else {
-      for (let i = 0; i < collection.length; i++) {
-        if (collection[i]) {
-          return true;
+      _.each(collection, function(item) {
+        if (item) {
+          result = true;
         }
-      }
+      });
     }
-    return false;
+    return result;
   };
 
 
@@ -275,15 +260,11 @@
   //   }); // obj1 now contains key1, key2, key3 and bla
 
   _.extend = function(des) {
-    let argArr = [];
-    for (let i = 1; i < arguments.length; i++) {
-      argArr.push(arguments[i]);
-    }
-    for (let k = 0; k < argArr.length; k++) {
-      for (let key in argArr[k]) {
-        des[key] = argArr[k][key];
-      }
-    }
+    _.each(arguments, function(item1, index1, c1) {
+      _.each(c1[index1], function(item2, index2, c2) {
+        des[index2] = c2[index2];
+      });
+    });
     return des;
   };
 
@@ -295,18 +276,14 @@
   // var anotherSource = { a: 'one' };
 
   _.defaults = function(obj) {
-    let argArr = [];
-    for (let i = 1; i < arguments.length; i++) {
-      argArr.push(arguments[i]);
-    }
-    for (let i = 0; i < argArr.length; i++) {
-      for (let key in argArr[i]) {
+    _.each(arguments, function(item1, index1, c1) {
+      _.each(c1[index1], function(item2, index2, c2) {
         let keyArr = Object.keys(obj);
-        if (keyArr.indexOf(key) === -1) {
-          obj[key] = argArr[i][key];
+        if (keyArr.indexOf(index2) === -1) {
+          obj[index2] = c2[index2];
         }
-      }
-    }
+      });
+    });
     return obj;
   };
 
@@ -384,12 +361,13 @@
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
     let result = array.slice();
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * i);
-      const temp = result[i];
-      result[i] = result[j];
+
+    _.each(result, function(item, index, c) {
+      const j = Math.floor(Math.random() * index);
+      const temp = result[index];
+      result[index] = result[j];
       result[j] = temp;
-    }
+    });
     return result;
   };
 
@@ -404,17 +382,17 @@
 
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
-  _.invoke = function(collection, functionOrKey, args) {
+  _.invoke = (collection, functionOrKey, args) => {
     let result = [];
     if (typeof functionOrKey === 'string') {
-      for (let i = 0; i < collection.length; i++) {
-        result.push(''[functionOrKey].apply(collection[i]));
-      }
+      _.each(collection, function(item) {
+        result.push(''[functionOrKey].apply(item));
+      });
       return result;
     }
-    for (let i = 0; i < collection.length; i++) {
-      result.push(functionOrKey.apply(collection[i]));
-    }
+    _.each(collection, function(item) {
+      result.push(functionOrKey.apply(item));
+    });
     return result;
   };
 
@@ -422,9 +400,14 @@
   // If iterator is a string, sort objects by that property with the name
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
-  _.sortBy = function(collection, iterator) {
-    let undefinedArr = collection.filter(x => x === undefined);
-    collection = collection.filter(x => x !== undefined);
+  _.sortBy = (collection, iterator) => {
+    let undefinedArr = _.filter(collection, function(item) {
+      return item === undefined;
+    });
+    collection = _.filter(collection, function(item) {
+      return item !== undefined;
+    });
+
     collection = collection.sort((a, b) => {
       if (a.age && b.age) {
         return a.age - b.age;
@@ -435,10 +418,9 @@
       }
     });
 
-    for (let i = 0; i < undefinedArr.length; i++) {
+    _.each(undefinedArr, function(item) {
       collection.push(undefined);
-    }
-
+    });
     return collection;
   };
 
@@ -449,13 +431,20 @@
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function(collection) {
     let result = [];
-    for (let i = 0; i < collection.length; i++) {
-      let cool = [collection[i]];
-      for (let j = 1; j < arguments.length; j++) {
-        cool.push(arguments[j][i]);
-      }
-      result.push(cool);
+    let argArr = [];
+    for (let i = 0; i < arguments.length; i++) {
+      argArr.push(arguments[i]);
     }
+
+    _.each(collection, function(item, index1) {
+      let arr = [item];
+      _.each(argArr, function(item2, index2, cx) {
+        if (cx[index2 + 1] !== undefined) {
+          arr.push(cx[index2 + 1][index1]);
+        }
+      });
+      result.push(arr);
+    });
     return result;
   };
 
@@ -463,17 +452,19 @@
   // The new array should contain all elements of the multidimensional array.
   //
   // Hint: Use Array.isArray to check if something is an array
-  _.flatten = function(nestedArray, result) {
+  _.flatten = (nestedArray, result) => {
     if (result === undefined) {
       result = [];
     }
-    for (let i = 0; i < nestedArray.length; i++) {
-      if (Array.isArray(nestedArray[i])) {
-        _.flatten(nestedArray[i], result);
+
+    _.each(nestedArray, function(item) {
+      if (Array.isArray(item)) {
+        _.flatten(item, result);
       } else {
-        result.push(nestedArray[i]);
+        result.push(item);
       }
-    }
+    });
+
     return result;
   };
 
@@ -482,14 +473,20 @@
   _.intersection = function() {
     //Edge Case: this works for two arrays, but not for three or more.
     let resultArr = [];
-    for (let i = 0; i < arguments.length; i ++) {
-      for (let j = 0; j < arguments[i].length; j++) {
-        let item = arguments[i][j];
-        if (arguments[i + 1] && arguments[i].indexOf(item) !== -1 && arguments[i + 1].indexOf(item) !== -1) {
-          resultArr.push(item);
-        }
-      }
+    let argArr = [];
+
+    for (let i = 0; i < arguments.length; i++) {
+      argArr.push(arguments[i]);
     }
+
+    _.each(argArr, function(item1, index1, collection1) {
+      _.each(item1, function(item2, index2, collection2) {
+        if (collection1[index1 + 1] && collection1[index1].indexOf(item2) !== -1 && collection1[index1 + 1].indexOf(item2) !== -1) {
+          resultArr.push(item2);
+        }
+      });
+    });
+
     return resultArr;
   };
 
@@ -497,19 +494,18 @@
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
     let resultArr = [];
-    let remaining = [];
+    let remainingArrays = [];
     for (let i = 1; i < arguments.length; i++) {
-      remaining.push(arguments[i]);
+      remainingArrays.push(arguments[i]);
     }
 
-    for (let i = 0; i < array.length; i++) {
-      let item = array[i];
-      if (remaining.some(x => _.contains(x, item))) {
-        continue;
-      } else {
+    _.each(array, function(item, index) {
+      if (!_.some(remainingArrays, function(item2, index2, collection2) {
+        return _.contains(item2, item);
+      })) {
         resultArr.push(item);
       }
-    }
+    });
     return resultArr;
   };
 
