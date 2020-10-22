@@ -69,7 +69,7 @@
     // it uses the iteration helper `each`, which you will need to write.
     var result = -1;
 
-    _.each(array, function (item, index) {
+    _.each(array, (item, index) => {
       if (item === target && result === -1) {
         result = index;
       }
@@ -82,7 +82,7 @@
   // [1, 2, 3, 4, 5, 6] f(el, idx, lst)
   _.filter = (collection, test) => {
     let resultArr = [];
-    _.each(collection, function(item) {
+    _.each(collection, (item) => {
       if (test(item)) {
         resultArr.push(item);
       }
@@ -92,7 +92,7 @@
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = (collection, test) => {
-    return _.filter(collection, function(item) {
+    return _.filter(collection, item => {
       return !test(item);
     });
   };
@@ -110,14 +110,14 @@
     var result = [];
     var uniqueResults = [];
     if (isSorted !== undefined) {
-      _.each(array, function(item, index) {
+      _.each(array, (item, index) => {
         uniqueResults.push(iterator(index));
       });
     } else {
       return [...new Set(array)];
     }
-    let trueI = uniqueResults.indexOf(true);
-    let falseI = uniqueResults.indexOf(false);
+    let trueI = _.indexOf(uniqueResults, true);
+    let falseI = _.indexOf(uniqueResults, false);
     result.push(array[trueI], array[falseI]);
     return _.sortBy(result);
   };
@@ -125,9 +125,9 @@
   // Return the results of applying an iterator to each element.
   _.map = (collection, iterator) => {
     let result = [];
-    _.each(collection, function (item) {
-      let cool = iterator(item);
-      result.push(cool);
+    _.each(collection, item => {
+      let mapped = iterator(item);
+      result.push(mapped);
     });
     return result;
   };
@@ -145,7 +145,7 @@
     // TIP: map is really handy when you want to transform an array of
     // values into a new array of values. _.pluck() is solved for you
     // as an example of this.
-    return _.map(collection, function(item) {
+    return _.map(collection, item => {
       return item[key];
     });
   };
@@ -173,13 +173,13 @@
 
   _.reduce = (collection, iterator, accumulator) => {
     if (accumulator !== undefined) {
-      _.each(collection, function (item) {
+      _.each(collection, item => {
         const curResult = iterator(accumulator, item);
         accumulator = curResult;
       });
     } else {
       accumulator = collection[0];
-      _.each(collection, function (item, index, collection) {
+      _.each(collection, (item, index, collection) => {
         if (collection[index + 1] !== undefined) {
           const curResult = iterator(accumulator, collection[index + 1]);
           accumulator = curResult;
@@ -193,7 +193,7 @@
   _.contains = (collection, target) => {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, function(wasFound, item) {
+    return _.reduce(collection, (wasFound, item) => {
       if (wasFound) {
         return true;
       }
@@ -204,13 +204,13 @@
   _.every = (collection, iterator) => {
     let result = true;
     if (iterator !== undefined) {
-      _.each(collection, function(item) {
+      _.each(collection, item => {
         if (!iterator(item)) {
           result = false;
         }
       });
     } else {
-      _.each(collection, function(item) {
+      _.each(collection, item => {
         if (!item) {
           result = false;
         }
@@ -224,13 +224,13 @@
   _.some = (collection, iterator) => {
     let result = false;
     if (iterator !== undefined) {
-      _.each(collection, function(item) {
+      _.each(collection, item => {
         if (iterator(item)) {
           result = true;
         }
       });
     } else {
-      _.each(collection, function(item) {
+      _.each(collection, item => {
         if (item) {
           result = true;
         }
@@ -260,8 +260,8 @@
   //   }); // obj1 now contains key1, key2, key3 and bla
 
   _.extend = function(des) {
-    _.each(arguments, function(item1, index1, c1) {
-      _.each(c1[index1], function(item2, index2, c2) {
+    _.each(arguments, (item1, index1, c1) => {
+      _.each(c1[index1], (item2, index2, c2) => {
         des[index2] = c2[index2];
       });
     });
@@ -276,10 +276,11 @@
   // var anotherSource = { a: 'one' };
 
   _.defaults = function(obj) {
-    _.each(arguments, function(item1, index1, c1) {
-      _.each(c1[index1], function(item2, index2, c2) {
+    _.each(arguments, (item1, index1, c1) => {
+      _.each(c1[index1], (item2, index2, c2) => {
         let keyArr = Object.keys(obj);
-        if (keyArr.indexOf(index2) === -1) {
+        let testDex = _.indexOf(keyArr, index2);
+        if (testDex === -1) {
           obj[index2] = c2[index2];
         }
       });
@@ -327,7 +328,7 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = function(func) {
+  _.memoize = func => {
     let cache = {};
     return function() {
       const key = String(func + arguments[0] + arguments[1] + arguments[2]);
@@ -359,10 +360,9 @@
   // TIP: This function's test suite will ask that you not modify the original
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
-  _.shuffle = function(array) {
+  _.shuffle = array => {
     let result = array.slice();
-
-    _.each(result, function(item, index, c) {
+    _.each(result, (item, index, c) => {
       const j = Math.floor(Math.random() * index);
       const temp = result[index];
       result[index] = result[j];
@@ -385,12 +385,12 @@
   _.invoke = (collection, functionOrKey, args) => {
     let result = [];
     if (typeof functionOrKey === 'string') {
-      _.each(collection, function(item) {
+      _.each(collection, item => {
         result.push(''[functionOrKey].apply(item));
       });
       return result;
     }
-    _.each(collection, function(item) {
+    _.each(collection, item => {
       result.push(functionOrKey.apply(item));
     });
     return result;
@@ -401,10 +401,10 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = (collection, iterator) => {
-    let undefinedArr = _.filter(collection, function(item) {
+    let undefinedArr = _.filter(collection, item => {
       return item === undefined;
     });
-    collection = _.filter(collection, function(item) {
+    collection = _.filter(collection, item => {
       return item !== undefined;
     });
 
@@ -418,7 +418,7 @@
       }
     });
 
-    _.each(undefinedArr, function(item) {
+    _.each(undefinedArr, item => {
       collection.push(undefined);
     });
     return collection;
@@ -436,9 +436,9 @@
       argArr.push(arguments[i]);
     }
 
-    _.each(collection, function(item, index1) {
+    _.each(collection, (item, index1) => {
       let arr = [item];
-      _.each(argArr, function(item2, index2, cx) {
+      _.each(argArr, (item2, index2, cx) => {
         if (cx[index2 + 1] !== undefined) {
           arr.push(cx[index2 + 1][index1]);
         }
@@ -457,7 +457,7 @@
       result = [];
     }
 
-    _.each(nestedArray, function(item) {
+    _.each(nestedArray, item => {
       if (Array.isArray(item)) {
         _.flatten(item, result);
       } else {
@@ -479,9 +479,14 @@
       argArr.push(arguments[i]);
     }
 
-    _.each(argArr, function(item1, index1, collection1) {
-      _.each(item1, function(item2, index2, collection2) {
-        if (collection1[index1 + 1] && collection1[index1].indexOf(item2) !== -1 && collection1[index1 + 1].indexOf(item2) !== -1) {
+    _.each(argArr, (item1, index1, collection1) => {
+      _.each(item1, (item2, index2, collection2) => {
+
+        let dexTest0 = collection1[index1 + 1];
+        let dexTest1 = _.indexOf(collection1[index1], item2) !== -1;
+        let dexTest2 = _.indexOf(collection1[index1 + 1], item2) !== -1;
+
+        if (dexTest0 && dexTest1 && dexTest2) {
           resultArr.push(item2);
         }
       });
@@ -499,7 +504,7 @@
       remainingArrays.push(arguments[i]);
     }
 
-    _.each(array, function(item, index) {
+    _.each(array, (item, index) => {
       if (!_.some(remainingArrays, function(item2, index2, collection2) {
         return _.contains(item2, item);
       })) {
