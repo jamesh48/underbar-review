@@ -470,6 +470,17 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    //Edge Case: this works for two arrays, but not for three or more.
+    let resultArr = [];
+    for (let i = 0; i < arguments.length; i ++) {
+      for (let j = 0; j < arguments[i].length; j++) {
+        let item = arguments[i][j];
+        if (arguments[i + 1] && arguments[i].indexOf(item) !== -1 && arguments[i + 1].indexOf(item) !== -1) {
+          resultArr.push(item);
+        }
+      }
+    }
+    return resultArr;
   };
 
   // Take the difference between one array and a number of other arrays.
