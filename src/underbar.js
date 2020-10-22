@@ -259,8 +259,9 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
 
-  _.extend = function(des) {
-    _.each(arguments, (item1, index1, c1) => {
+  _.extend = (des, ...args) => {
+    // alert(xaxa)
+    _.each(args, (item1, index1, c1) => {
       _.each(c1[index1], (item2, index2, c2) => {
         des[index2] = c2[index2];
       });
@@ -275,8 +276,8 @@
   // var source = { a: 1 };
   // var anotherSource = { a: 'one' };
 
-  _.defaults = function(obj) {
-    _.each(arguments, (item1, index1, c1) => {
+  _.defaults = (obj, ...args) => {
+    _.each(args, (item1, index1, c1) => {
       _.each(c1[index1], (item2, index2, c2) => {
         let keyArr = Object.keys(obj);
         let testDex = _.indexOf(keyArr, index2);
@@ -299,7 +300,7 @@
 
   // Return a function that can be called at most one time. Subsequent calls
   // should return the previously returned value.
-  _.once = function(func) {
+  _.once = (func) => {
     // TIP: These variables are stored in a "closure scope" (worth researching),
     // so that they'll remain available to the newly-generated function every
     // time it's called.
@@ -308,11 +309,11 @@
 
     // TIP: We'll return a new function that delegates to the old one, but only
     // if it hasn't been called before.
-    return function() {
+    return function(...args) {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
         // information from one function call to another.
-        result = func.apply(this, arguments);
+        result = func.apply(this, args);
         alreadyCalled = true;
       }
       // The new function always returns the originally computed result.
@@ -328,12 +329,16 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = func => {
+  _.memoize = (func) => {
     let cache = {};
-    return function() {
-      const key = String(func + arguments[0] + arguments[1] + arguments[2]);
+    return function(...args) {
+      let key = func;
+      _.each(args, item => {
+        key += item;
+      });
+
       if (!cache[key]) {
-        cache[key] = func.apply(this, arguments);
+        cache[key] = func.apply(this, args);
       }
       return cache[key];
     };
@@ -345,8 +350,8 @@
   // The arguments for the original function are passed after the wait
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
-  _.delay = function(func, wait) {
-    setTimeout(...arguments);
+  _.delay = (...args) => {
+    setTimeout(...args);
   };
 
 
@@ -429,18 +434,13 @@
   //
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
-  _.zip = function(collection) {
+  _.zip = (collection, ...args) => {
     let result = [];
-    let argArr = [];
-    for (let i = 0; i < arguments.length; i++) {
-      argArr.push(arguments[i]);
-    }
-
     _.each(collection, (item, index1) => {
       let arr = [item];
-      _.each(argArr, (item2, index2, cx) => {
-        if (cx[index2 + 1] !== undefined) {
-          arr.push(cx[index2 + 1][index1]);
+      _.each(args, (item2, index2, cx) => {
+        if (cx[index2] !== undefined) {
+          arr.push(cx[index2][index1]);
         }
       });
       result.push(arr);
@@ -470,16 +470,11 @@
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
-  _.intersection = function() {
+  _.intersection = (...args) => {
     //Edge Case: this works for two arrays, but not for three or more.
     let resultArr = [];
-    let argArr = [];
 
-    for (let i = 0; i < arguments.length; i++) {
-      argArr.push(arguments[i]);
-    }
-
-    _.each(argArr, (item1, index1, collection1) => {
+    _.each(args, (item1, index1, collection1) => {
       _.each(item1, (item2, index2, collection2) => {
 
         let dexTest0 = collection1[index1 + 1];
@@ -497,15 +492,11 @@
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
-  _.difference = function(array) {
+  _.difference = (array, ...remainingArrays) => {
     let resultArr = [];
-    let remainingArrays = [];
-    for (let i = 1; i < arguments.length; i++) {
-      remainingArrays.push(arguments[i]);
-    }
 
     _.each(array, (item, index) => {
-      if (!_.some(remainingArrays, function(item2, index2, collection2) {
+      if (!_.some(remainingArrays, (item2, index2, collection2) => {
         return _.contains(item2, item);
       })) {
         resultArr.push(item);
