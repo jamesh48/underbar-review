@@ -438,9 +438,9 @@
     let result = [];
     _.each(collection, (item, index1) => {
       let arr = [item];
-      _.each(args, (item2, index2, cx) => {
-        if (cx[index2] !== undefined) {
-          arr.push(cx[index2][index1]);
+      _.each(args, (item2, index2, collectionX) => {
+        if (collectionX[index2] !== undefined) {
+          arr.push(collectionX[index2][index1]);
         }
       });
       result.push(arr);
