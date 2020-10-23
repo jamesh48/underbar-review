@@ -510,7 +510,19 @@
   // on this function.
   //
   // Note: This is difficult! It may take a while to implement.
-  _.throttle = function(func, wait) {
+
+  //ref: https://stackoverflow.com/questions/27078285/simple-throttle-in-js
+  _.throttle = (func, wait) => {
+    let waitInd = false;
+    return function (...args) {
+      if (!waitInd) {
+        func.apply(this, args);
+        waitInd = true;
+        setTimeout(function () {
+          waitInd = false;
+        }, wait);
+      }
+    };
   };
 }());
 
