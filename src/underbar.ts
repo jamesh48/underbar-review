@@ -1,12 +1,16 @@
-(function() {
-  'use strict';
+import { CustomWindow } from "./types";
+declare let window: CustomWindow;
+// let _: CustomWindow = {};
+(function () {
+  "use strict";
 
-  window._ = {};
+  // @ts-ignore
+  window._ = {}
 
   // Returns whatever value is passed as the argument. This function doesn't
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
-  _.identity = val => val;
+  window._.identity = (val) => val;
 
   /**
    * COLLECTIONS
@@ -29,11 +33,11 @@
 
   // Return an array of the first n elements of an array. If n is undefined,
   // return just the first element.
-  _.first = (array, n) => n === undefined ? array[0] : array.slice(0, n);
+  window._.first = (array, n) => (n === undefined ? array[0] : array.slice(0, n));
 
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
-  _.last = (array, n) => {
+  window._.last = (array, n) => {
     if (n === undefined) {
       return array[array.length - 1];
     } else if (n === 0) {
@@ -49,7 +53,7 @@
   //
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
-  _.each = (collection, iterator) => {
+  window._.each = (collection, iterator) => {
     if (Array.isArray(collection)) {
       for (let i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
@@ -63,13 +67,13 @@
 
   // Returns the index at which value can be found in the array, or -1 if value
   // is not present in the array.
-  _.indexOf = (array, target) => {
+  window._.indexOf = (array, target) => {
     // TIP: Here's an example of a function that needs to iterate, which we've
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
     var result = -1;
 
-    _.each(array, (item, index) => {
+    window._.each(array, (item, index) => {
       if (item === target && result === -1) {
         result = index;
       }
@@ -80,9 +84,9 @@
 
   // Return all elements of an array that pass a truth test.
   // [1, 2, 3, 4, 5, 6] f(el, idx, lst)
-  _.filter = (collection, test) => {
-    let resultArr = [];
-    _.each(collection, (item) => {
+  window._.filter = (collection, test) => {
+    let resultArr: any[] = [];
+    window._.each(collection, (item) => {
       if (test(item)) {
         resultArr.push(item);
       }
@@ -91,8 +95,8 @@
   };
 
   // Return all elements of an array that don't pass a truth test.
-  _.reject = (collection, test) => {
-    return _.filter(collection, item => {
+  window._.reject = (collection, test) => {
+    return window._.filter(collection, (item) => {
       return !test(item);
     });
   };
@@ -106,30 +110,30 @@
   //1# - Push results to two arrays instead of one
   //#2 - Push results to one array.
 
-  _.uniq = (array, isSorted, iterator) => {
+  window._.uniq = (array, isSorted, iterator) => {
     var result = [];
-    var uniqueResults = [];
+    var uniqueResults: any[] = [];
     if (isSorted !== undefined) {
-      _.each(array, (item, index) => {
+      window._.each(array, (_item, index) => {
         uniqueResults.push(iterator(index));
       });
     } else {
       return [...new Set(array)];
     }
-    let trueI = _.indexOf(uniqueResults, true);
-    let falseI = _.indexOf(uniqueResults, false);
+
+    let trueI: any = window._.indexOf(uniqueResults, true);
+    let falseI: number = window._.indexOf(uniqueResults, false);
     result.push(array[trueI], array[falseI]);
-    return _.sortBy(result);
+    return window._.sortBy(result);
   };
 
   // Return the results of applying an iterator to each element.
-  _.map = (collection, iterator) => {
-    let result = [];
-    _.each(collection, item => {
-      let mapped = iterator(item);
-      result.push(mapped);
+  window._.map = (collection, iterator) => {
+    let resultArr: any[] = [];
+    window._.each(collection, (item) => {
+      resultArr.push(iterator(item));
     });
-    return result;
+    return resultArr;
   };
 
   /*
@@ -141,11 +145,11 @@
   // Takes an array of objects and returns and array of the values of
   // a certain property in it. E.g. take an array of people and return
   // an array of just their ages
-  _.pluck = (collection, key) => {
+  window._.pluck = (collection, key) => {
     // TIP: map is really handy when you want to transform an array of
     // values into a new array of values. _.pluck() is solved for you
     // as an example of this.
-    return _.map(collection, item => {
+    return window._.map(collection, (item) => {
       return item[key];
     });
   };
@@ -171,15 +175,15 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
 
-  _.reduce = (collection, iterator, accumulator) => {
+  window._.reduce = (collection, iterator, accumulator) => {
     if (accumulator !== undefined) {
-      _.each(collection, item => {
+      window._.each(collection, (item) => {
         const curResult = iterator(accumulator, item);
         accumulator = curResult;
       });
     } else {
       accumulator = collection[0];
-      _.each(collection, (item, index, collection) => {
+      window._.each(collection, (_item, index, collection) => {
         if (collection[index + 1] !== undefined) {
           const curResult = iterator(accumulator, collection[index + 1]);
           accumulator = curResult;
@@ -190,27 +194,31 @@
   };
 
   // Determine if the array or object contains a given value (using `===`).
-  _.contains = (collection, target) => {
+  window._.contains = (collection, target) => {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, (wasFound, item) => {
-      if (wasFound) {
-        return true;
-      }
-      return item === target;
-    }, false);
+    return window._.reduce(
+      collection,
+      (wasFound, item) => {
+        if (wasFound) {
+          return true;
+        }
+        return item === target;
+      },
+      false
+    );
   };
 
-  _.every = (collection, iterator) => {
+  window._.every = (collection, iterator) => {
     let result = true;
     if (iterator !== undefined) {
-      _.each(collection, item => {
+      window._.each(collection, (item) => {
         if (!iterator(item)) {
           result = false;
         }
       });
     } else {
-      _.each(collection, item => {
+      window._.each(collection, (item) => {
         if (!item) {
           result = false;
         }
@@ -221,16 +229,16 @@
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
-  _.some = (collection, iterator) => {
+  window._.some = (collection, iterator) => {
     let result = false;
     if (iterator !== undefined) {
-      _.each(collection, item => {
+      window._.each(collection, (item) => {
         if (iterator(item)) {
           result = true;
         }
       });
     } else {
-      _.each(collection, item => {
+      window._.each(collection, (item) => {
         if (item) {
           result = true;
         }
@@ -238,7 +246,6 @@
     }
     return result;
   };
-
 
   /**
    * OBJECTS
@@ -259,10 +266,9 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
 
-  _.extend = (des, ...args) => {
-    // alert(xaxa)
-    _.each(args, (item1, index1, c1) => {
-      _.each(c1[index1], (item2, index2, c2) => {
+  window._.extend = (des, ...args) => {
+    window._.each(args, (_item1, index1, c1) => {
+      window._.each(c1[index1], (_item2, index2, c2) => {
         des[index2] = c2[index2];
       });
     });
@@ -272,15 +278,11 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
 
-  // var destination = {};
-  // var source = { a: 1 };
-  // var anotherSource = { a: 'one' };
-
-  _.defaults = (obj, ...args) => {
-    _.each(args, (item1, index1, c1) => {
-      _.each(c1[index1], (item2, index2, c2) => {
+  window._.defaults = (obj, ...args) => {
+    window._.each(args, (_item1, index1, c1) => {
+      window._.each(c1[index1], (_item2, index2, c2) => {
         let keyArr = Object.keys(obj);
-        let testDex = _.indexOf(keyArr, index2);
+        let testDex = window._.indexOf(keyArr, index2);
         if (testDex === -1) {
           obj[index2] = c2[index2];
         }
@@ -288,7 +290,6 @@
     });
     return obj;
   };
-
 
   /**
    * FUNCTIONS
@@ -300,16 +301,16 @@
 
   // Return a function that can be called at most one time. Subsequent calls
   // should return the previously returned value.
-  _.once = (func) => {
+  window._.once = (func) => {
     // TIP: These variables are stored in a "closure scope" (worth researching),
     // so that they'll remain available to the newly-generated function every
     // time it's called.
     var alreadyCalled = false;
-    var result;
+    var result: null | Function;
 
     // TIP: We'll return a new function that delegates to the old one, but only
     // if it hasn't been called before.
-    return function(...args) {
+    return function (...args) {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
         // information from one function call to another.
@@ -329,11 +330,11 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = (func) => {
+  window._.memoize = (func) => {
     let cache = {};
-    return function(...args) {
+    return function (...args) {
       let key = func;
-      _.each(args, item => {
+      window._.each(args, (item) => {
         key += item;
       });
 
@@ -350,10 +351,9 @@
   // The arguments for the original function are passed after the wait
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
-  _.delay = (...args) => {
+  window._.delay = (...args) => {
     setTimeout(...args);
   };
-
 
   /**
    * ADVANCED COLLECTION OPERATIONS
@@ -365,9 +365,9 @@
   // TIP: This function's test suite will ask that you not modify the original
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
-  _.shuffle = array => {
+  window._.shuffle = (array) => {
     let result = array.slice();
-    _.each(result, (item, index, c) => {
+    window._.each(result, (_item, index) => {
       const j = Math.floor(Math.random() * index);
       const temp = result[index];
       result[index] = result[j];
@@ -375,7 +375,6 @@
     });
     return result;
   };
-
 
   /**
    * ADVANCED
@@ -387,15 +386,15 @@
 
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
-  _.invoke = (collection, functionOrKey, args) => {
-    let result = [];
-    if (typeof functionOrKey === 'string') {
-      _.each(collection, item => {
-        result.push(''[functionOrKey].apply(item));
+  window._.invoke = (collection, functionOrKey) => {
+    let result: any[] = [];
+    if (typeof functionOrKey === "string") {
+      window._.each(collection, (item) => {
+        result.push(""[functionOrKey].apply(item));
       });
       return result;
     }
-    _.each(collection, item => {
+    window._.each(collection, (item) => {
       result.push(functionOrKey.apply(item));
     });
     return result;
@@ -405,11 +404,11 @@
   // If iterator is a string, sort objects by that property with the name
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
-  _.sortBy = (collection, iterator) => {
-    let undefinedArr = _.filter(collection, item => {
+  window._.sortBy = (collection) => {
+    let undefinedArr = window._.filter(collection, (item) => {
       return item === undefined;
     });
-    collection = _.filter(collection, item => {
+    collection = window._.filter(collection, (item) => {
       return item !== undefined;
     });
 
@@ -423,7 +422,7 @@
       }
     });
 
-    _.each(undefinedArr, item => {
+    window._.each(undefinedArr, () => {
       collection.push(undefined);
     });
     return collection;
@@ -434,11 +433,11 @@
   //
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
-  _.zip = (collection, ...args) => {
-    let result = [];
-    _.each(collection, (item, index1) => {
+  window._.zip = (collection, ...args) => {
+    let result: any[] = [];
+    window._.each(collection, (item, index1) => {
       let arr = [item];
-      _.each(args, (item2, index2, collectionX) => {
+      window._.each(args, (_item2, index2, collectionX) => {
         if (collectionX[index2] !== undefined) {
           arr.push(collectionX[index2][index1]);
         }
@@ -452,14 +451,14 @@
   // The new array should contain all elements of the multidimensional array.
   //
   // Hint: Use Array.isArray to check if something is an array
-  _.flatten = (nestedArray, result) => {
+  window._.flatten = (nestedArray, result) => {
     if (result === undefined) {
       result = [];
     }
 
-    _.each(nestedArray, item => {
+    window._.each(nestedArray, (item) => {
       if (Array.isArray(item)) {
-        _.flatten(item, result);
+        window._.flatten(item, result);
       } else {
         result.push(item);
       }
@@ -470,16 +469,15 @@
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
-  _.intersection = (...args) => {
+  window._.intersection = (...args) => {
     //Edge Case: this works for two arrays, but not for three or more.
-    let resultArr = [];
+    let resultArr: any[] = [];
 
-    _.each(args, (item1, index1, collection1) => {
-      _.each(item1, (item2, index2, collection2) => {
-
+    window._.each(args, (item1, index1, collection1) => {
+      window._.each(item1, (item2, _index2, _collection2) => {
         let dexTest0 = collection1[index1 + 1];
-        let dexTest1 = _.indexOf(collection1[index1], item2) !== -1;
-        let dexTest2 = _.indexOf(collection1[index1 + 1], item2) !== -1;
+        let dexTest1 = window._.indexOf(collection1[index1], item2) !== -1;
+        let dexTest2 = window._.indexOf(collection1[index1 + 1], item2) !== -1;
 
         if (dexTest0 && dexTest1 && dexTest2) {
           resultArr.push(item2);
@@ -492,13 +490,15 @@
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
-  _.difference = (array, ...remainingArrays) => {
-    let resultArr = [];
+  window._.difference = (array, ...remainingArrays) => {
+    let resultArr: any[] = [];
 
-    _.each(array, (item, index) => {
-      if (!_.some(remainingArrays, (item2, index2, collection2) => {
-        return _.contains(item2, item);
-      })) {
+    window._.each(array, (item, _index) => {
+      if (
+        !window._.some(remainingArrays, (remainingArray: any) => {
+          return window._.contains(remainingArray, item);
+        })
+      ) {
         resultArr.push(item);
       }
     });
@@ -512,9 +512,9 @@
   // Note: This is difficult! It may take a while to implement.
 
   //ref: https://stackoverflow.com/questions/27078285/simple-throttle-in-js
-  _.throttle = (func, wait) => {
+  window._.throttle = (func, wait) => {
     let waitInd = false;
-    return function (...args) {
+    return function (...args: any) {
       if (!waitInd) {
         func.apply(this, args);
         waitInd = true;
@@ -524,5 +524,4 @@
       }
     };
   };
-}());
-
+})();

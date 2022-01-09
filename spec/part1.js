@@ -1,5 +1,5 @@
 (function() {
-  'use strict';
+  // 'use strict';
 
   var FILL_ME_IN = 'Fill this value in';
 
